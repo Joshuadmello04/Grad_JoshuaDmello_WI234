@@ -38,6 +38,8 @@ public class StreamAssignment {
         System.out.println(m1);
         System.out.println("---------------------");
         //this was M/F ie 2 categories so should use partitionBy instead
+        Map<Boolean, Long> result1 = employees.stream().collect(Collectors.partitioningBy(e-> e.gender.equals("Male"), Collectors.counting()));
+        System.out.println("\n2. Gender wise Counting: "+result1);
 
         //3. total expenses per department
         Map<String,Integer> m2 = employees.stream().collect(Collectors.groupingBy(e->e.dept,Collectors.summingInt(e->e.salary)));
@@ -69,6 +71,8 @@ public class StreamAssignment {
         long count = employees.stream().count();
         System.out.println("Num employees : "+count);
         /*Sir said dont use streams unnecessarily (total count use list.size()*/
+        int size = employees.size();
+        System.out.println("Num employees : " +size);
     }
 }
 
