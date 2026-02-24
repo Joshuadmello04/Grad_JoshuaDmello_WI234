@@ -19,6 +19,13 @@ public class Student {
     private String gender;
     private Double percentage;
     
+	public Student(long l, String string, String string2, int i) {
+		//TODO Auto-generated constructor stub
+		this.regNo = l;
+		this.name = string;
+		this.school = string2;
+		this.standard = i;
+	}
 	public long getRegNo() {
 		return regNo;
 	}

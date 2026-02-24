@@ -23,10 +23,9 @@ public class StudentService {
 	}
 	
 	//get /students/{regno}
-	 public Student getStudent(Long regNo) {
-	        return repo.findById(regNo)
-	                .orElseThrow(() -> new RuntimeException("Student not found"));
-	    }
+	 public Optional<Student> getStudent(long reg) {
+        return repo.findById(reg);
+    }
 	
 	//post /students
 	public Student createStudent(Student st)
@@ -38,7 +37,11 @@ public class StudentService {
 	//put /students/{regno}
 	public Student updateStudent(Long regNo, Student updated)
 	{
-		Student existing = getStudent(regNo);
+		Optional<Student> studentOptional = getStudent(regNo);
+		if (!studentOptional.isPresent()) {
+			return null;
+		}
+		Student existing = studentOptional.get();
 		
 		existing.setRollNo(updated.getRollNo());
         existing.setName(updated.getName());
@@ -53,7 +56,11 @@ public class StudentService {
 	//patch /students/{regno}
 	public Student patchUpdate(Long regNo,Map<String, Object> updates)
 	{
-		Student s = getStudent(regNo);
+		Optional<Student> studentOptional = getStudent(regNo);
+		if (!studentOptional.isPresent()) {
+			return null;
+		}
+		Student s = studentOptional.get();
 		
 		 updates.forEach((k, v) -> {
 	            switch (k) {

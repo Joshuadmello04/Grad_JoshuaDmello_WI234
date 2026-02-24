@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,12 +36,12 @@ public class StudentController {
 	@GetMapping("/students/{reg}")
 	public ResponseEntity<Student> getOne(@PathVariable long reg)
 	{
-		Student student = service.getStudent(reg);
-		if(student==null)
+		Optional<Student> studentOptional = service.getStudent(reg);
+		if(!studentOptional.isPresent())
 		{
 			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.ok(student);
+		return ResponseEntity.ok(studentOptional.get());
 	}
 	
 	@PostMapping("/students")
