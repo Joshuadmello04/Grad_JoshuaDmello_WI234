@@ -1,14 +1,12 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,27 +24,40 @@ public class StudentController {
 	StudentService service;
 	
 	
-	@GetMapping("/students")
-	public List<Student> getAll()
-	{
-		return service.getAllStudents();
-	}
+	 // 200 OK
+    @GetMapping
+    public ResponseEntity<List<Student>> getAll() {
+        return ResponseEntity.ok(service.getAllStudents());
+    }
 	
 	//testing assignment
-	@GetMapping("/students/{reg}")
-	public ResponseEntity<Student> getOne(@PathVariable long reg)
-	{
-	    Optional<Student> student = service.getStudent(reg);
+	// 200 OK / 404
+    @GetMapping("/{reg}")
+    public ResponseEntity<Student> getOne(@PathVariable Long reg) {
+        return ResponseEntity.ok(service.getStudent(reg));
+    }
+	
+	 // 201 CREATED
+    @PostMapping
+    public ResponseEntity<Student> create(@RequestBody Student s) {
+        Student created = service.createStudent(s);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
 
-	    if(student.isPresent()) {
-	        return ResponseEntity.ok(student.get());
-	    }
-	    else {
-	        return ResponseEntity.notFound().build();
-	    }
-	}
-	
-	
+	  // 200 OK
+    @PutMapping("/{reg}")
+    public ResponseEntity<Student> update(@PathVariable Long reg,
+                                          @RequestBody Student s) {
+        return ResponseEntity.ok(service.updateStudent(reg, s));
+    }
+
+    // 204 NO CONTENT
+    @DeleteMapping("/{reg}")
+    public ResponseEntity<Void> delete(@PathVariable Long reg) {
+        service.deleteByRegNo(reg);
+        return ResponseEntity.noContent().build();
+    }
+
 //	@GetMapping("/students/{reg}")
 //	public Optional<Student> getOne(@PathVariable long reg)
 //	{

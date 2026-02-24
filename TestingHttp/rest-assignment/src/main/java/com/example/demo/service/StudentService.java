@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Student;
 import com.example.demo.repository.StudentRepository;
+import com.example.demo.exception.ResourceNotFoundException;
 
 @Service
 public class StudentService {
@@ -19,15 +19,11 @@ public class StudentService {
 	
 	//testing assignment for http codes
 	
-	
-	
-	 public StudentService(StudentRepository repo) {
-	        this.repo = repo;
-	  }
 
-	 public Optional<Student> getStudent(Long regNo) {
-	        return repo.findById(regNo);
-	  }
+	  public Student getStudent(Long regNo) {
+			return repo.findById(regNo)
+					.orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+		}
 	
 	
 	
@@ -86,6 +82,9 @@ public class StudentService {
 	//delete /students/regno
 	public void deleteByRegNo(Long regNo)
 	{
+		 if (!repo.existsById(regNo)) {
+            throw new ResourceNotFoundException("Student not found");
+        }
 		repo.deleteById(regNo);
 	}
 	
