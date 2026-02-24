@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,58 +26,76 @@ public class StudentController {
 	StudentService service;
 	
 	@GetMapping("/students")
-	public List<Student> getAll()
+	public ResponseEntity<List<Student>> getAll()
 	{
-		return service.getAllStudents();
+		List<Student> students = service.getAllStudents();
+		return ResponseEntity.ok(students);
 	}
 	
 	@GetMapping("/students/{reg}")
-	public Student getOne(@PathVariable long reg)
+	public ResponseEntity<Student> getOne(@PathVariable long reg)
 	{
-		return service.getStudent(reg);
+		Student student = service.getStudent(reg);
+		if(student==null)
+		{
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(student);
 	}
 	
 	@PostMapping("/students")
-	public Student createStudent(@RequestBody Student s)
+	public ResponseEntity<Student> createStudent(@RequestBody Student s)
 	{
 		//this will take json
-		return service.createStudent(s);
+		Student created =  service.createStudent(s);
+		return ResponseEntity.status(HttpStatus.CREATED).body(created);
 	}
 	
 	@PutMapping("/students/{reg}")
-	public Student updateStudent(@PathVariable long reg,@RequestBody Student s)
+	public ResponseEntity<Student> updateStudent(@PathVariable long reg,@RequestBody Student s)
 	{
 		//path + json
-		return service.updateStudent(reg, s);
+		Student updated = service.updateStudent(reg, s);
+		if(updated==null)
+		{
+			return ResponseEntity.notFound().build(); //201
+		}
+		return ResponseEntity.ok(updated);
 	}
 	
 	@PatchMapping("/students/{reg}")
-	public Student patchUpdate(@PathVariable long reg,@RequestBody Map<String, Object> updates)
+	public ResponseEntity<Student> patchUpdate(@PathVariable long reg,@RequestBody Map<String, Object> updates)
 	{
-		 return service.patchUpdate(reg, updates);
+		 Student s = service.patchUpdate(reg, updates);
+		 if(s==null)
+		 {
+			 return ResponseEntity.notFound().build();
+		 }
+		 return ResponseEntity.ok(s);
 	}
 	
 	
 	@DeleteMapping("/students/{reg}")
-	public void deleteStudent(@PathVariable long reg)
+	public ResponseEntity<Void> deleteStudent(@PathVariable long reg)
 	{
 		service.deleteByRegNo(reg);
+		return ResponseEntity.noContent().build();
 	}
 	
 	
 	//get students by school name
 	@GetMapping("/students/school")
-	public List<Student> getBySchoolName(@RequestParam String name)
+	public ResponseEntity<List<Student>> getBySchoolName(@RequestParam String name)
 	{
 		// students/school?name= in url
-		return service.getBySchoolName(name);
+		return ResponseEntity.ok(service.getBySchoolName(name));
 	}
 	
 	//get count by schoolname
 	@GetMapping("/students/school/count")
-	public long getCountBySchool(@RequestParam String name)
+	public ResponseEntity<Long> getCountBySchool(@RequestParam String name)
 	{
-		return service.countBySchool(name);
+		return ResponseEntity.ok(service.countBySchool(name));
 	}
 	
 	// get /students/school/standard/count?class=5&name=ABC
@@ -87,15 +107,15 @@ public class StudentController {
 	
 	//show pass and fail
 	@GetMapping("/students/result")
-	public List<Student> getResults(@RequestParam boolean pass)
+	public ResponseEntity<List<Student>> getResults(@RequestParam boolean pass)
 	{
-		return service.findByResult(pass);
+		return ResponseEntity.ok(service.findByResult(pass));
 	}
 	
 	//get strength using gender and school
 	@GetMapping("/students/strength")
-	public Long getStrength(@RequestParam String gender,@RequestParam long std)
+	public ResponseEntity<Long> getStrength(@RequestParam String gender,@RequestParam long std)
 	{
-		return service.countByGenderAndStandard(gender, std);
+		return ResponseEntity.ok(service.countByGenderAndStandard(gender, std));
 	}
 }
