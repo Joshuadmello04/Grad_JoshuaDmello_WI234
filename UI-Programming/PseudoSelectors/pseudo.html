@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pseudo</title>
+    <style>
+        a:link{
+            color: blue;
+        }
+        a:visited{
+            color: green;
+        }
+        a:hover{
+            color: red;
+        }
+        a:active{
+            color: purple;
+        }
+
+        h4::before{
+            content : "Welcome ";
+        }
+        h4::after{
+            content: ". Have a pleasant day";
+        }
+
+        ::marker{
+		 color : white;
+		 background : purple;
+        }
+
+        ::selection{
+            color: white;
+            background: black;
+        }
+         h2::selection{
+				 color: white;
+            background: purple;
+ } 
+    </style>
+</head>
+<body>
+    <h1>Pseudo Types</h1>
+    <hr>
+    <h2>Pseudo Classes</h2>
+
+    <h3>
+        <a href="demo.html">Click here to move to the demo.html page</a>
+    </h3>
+
+    <hr>
+    <h2>Pseudo Elements</h2>
+    <h4>reddy</h4>
+    <h4>sinha</h4>
+    <h4>srivasta</h4>
+</body>
+</html>
