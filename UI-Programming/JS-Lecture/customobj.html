@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Object</title>
+    <script>
+        function display(obj){
+            document.write("<br>Name: </b>" + obj.name);
+            document.write("<br>Age: </b>" + obj.age);
+            document.write("<br>Salary: </b>" + obj.salary);
+        }
+    </script>
+</head>
+<body>
+    <h1>Custom Objects</h1>
+    <hr>
+    <h2>Using Object Function</h2>
+    <h3>
+        <script>
+            var emp1 = new Object();
+            emp1.name = "John";
+            emp1.age = 30;
+            emp1.salary = 50000;
+           
+            var emp2 = new Object();
+            emp2.name = "Jane";
+            emp2.age = 28;  
+            emp2.salary = 55000;
+
+            display(emp1);
+            display(emp2);
+        </script>
+    </h3>
+    <hr>
+    <h2>Using function as constructor</h2>
+    <h3>
+        <script>
+            function Employee(name, age, salary){
+                this.name = name;
+                this.age = age;
+                this.salary = salary;
+            }
+
+            var emp3 = new Employee("Alice", 32, 60000);
+            var emp4 = new Employee("Bob", 29, 52000);
+
+            display(emp3);
+            display(emp4);
+        </script>
+    </h3>
+
+    <hr>
+    <h2>Using JSON Format</h2>
+    <h3>
+        <script>
+            var emp5={
+                "name":"Badal",
+                "age":35,
+                "salary":70000
+            };
+            var emp6={
+                "name":"Sita",
+                "age":27,
+                "salary":48000
+            };
+
+            display(emp5);
+            display(emp6);
+        </script>
+    </h3>
+    <hr>
+    <h2>Using ECMA Script ES6 classes</h2>
+    <h3>
+        <script>
+            class EMP{
+                constructor(name, age, salary){ //note constructor is keyword 
+                //it doesnt include class name
+                    this.name = name;
+                    this.age = age;
+                    this.salary = salary;
+                }
+
+                display(){
+                    document.write("<br>Name: </b>" + this.name);
+                    document.write("<br>Age: </b>" + this.age);
+                    document.write("<br>Salary: </b>" + this.salary);
+                }
+            }
+
+            var emp7 = new EMP("Joshua", 31, 58000);
+            var emp8 = new EMP("Diana", 26, 51000);
+
+            display(emp7);
+            display(emp8);
+
+            // emp7.display()
+            // emp8.display()
+        </script>
+    </h3>
+</body>
+</html>
