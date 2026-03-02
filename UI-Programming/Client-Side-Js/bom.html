@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOM Demo</title>
+</head>
+<body>
+    <h1>Browser Object Model Demo</h1>
+    <hr>
+    <h2>Window Object</h2>
+    <script>
+        var name = prompt("Enter name : ")
+        alert("Hello " + name);
+        document.write("Welcome to BOM demo, " + name);
+        //window.close(); //closes current window
+        //window.open("/");//some link to a page or website
+        var flag = window.confirm("Do you wish to close window?");
+        if(flag){
+            window.close();
+        }
+        else{
+            document.write("<br>Window remains open.");
+        }
+    </script>
+    <hr>
+    <h2>Location Object</h2>
+    <h3>
+        <script>
+            //document.write("URL : "+ location.url+"<br>") -> but href gives deets
+            document.write("URL : "+ location.href+"<br>");
+            document.write("Protocol : "+ location.protocol+"<br>");
+            document.write("Host : "+ location.host+"<br>");
+            document.write("Pathname : "+ location.pathname+"<br>");
+
+        </script>
+    </h3>
+    <hr>
+    <h2>Navigator Object</h2>
+    <h3>
+    <script>
+        document.write("App Name : "+ navigator.appName+"<br>");
+        document.write("Browser Name : "+ navigator.appCodeName+"<br>");
+        document.write("App Version : "+ navigator.appVersion+"<br>");
+        document.write("Cookies Enabled : "+ navigator.cookieEnabled+"<br>");
+        document.write("Online : "+ navigator.onLine+"<br>");
+        document.write("Java Enabled : "+ navigator.javaEnabled()+"<br>");
+        document.write("User Agent : "+ navigator.userAgent+"<br>");
+        document.write("Platform : "+ navigator.platform+"<br>");
+        document.write("Language : "+ navigator.language+"<br>");
+        document.write("Media devices : "+ navigator.mediaDevices+"<br>");
+        document.write("Geolocation : "+ navigator.geolocation+"<br>");
+       // document.write("Video "+ navigator.mediaDevices.getUserMedia({video : true})+"<br>");
+</script>
+    </h3>
+    <hr>
+    <h2>Screen Object</h2>
+    <script>
+        document.write("Screen Width : "+ screen.width+"<br>");
+        document.write("Screen Height : "+ screen.height+"<br>");
+        document.write("Available Screen Width : "+ screen.availWidth+"<br>");
+        document.write("Available Screen Height : "+ screen.availHeight+"<br>");
+        document.write("Color Depth : "+ screen.colorDepth+"<br>");
+        document.write("Pixel Depth : "+ screen.pixelDepth+"<br>");
+    </script>
+    <hr>
+    <h2>History Object</h2>
+    <h3>
+        <script>
+            document.write("History Length : "+ history.length+"<br>");
+            //history.back(); //goes to previous page
+            //history.forward(); //goes to next page
+        </script>
+    </h3>
+</body>
+</html>

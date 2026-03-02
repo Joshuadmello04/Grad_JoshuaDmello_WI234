@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Demo 1</title>
+     <script>
+        function welcome1(fname,lname){
+            //alert("welcome1 "+fname+" "+lname);
+            document.getElementById("i1").innerText = "Welcome "+fname+" "+lname;
+            document.f2.wc.value=fname + " " + lname;
+        }
+        function welcome2(){
+            let fname = document.forms[0].t1.value;
+            let lname = document.forms[0].t2.value;
+            document.getElementById("i1").innerText = "Welcome "+fname+" "+lname;
+        }
+        function welcome3(){
+            let fname = document.f1.t1.value;
+            let lname = document.f1.t2.value;
+            document.getElementById("i1").innerText = "Welcome "+fname+" "+lname;
+        }
+        function welcome4(){
+            let fname = document.getElementById("i1").value;
+            let lname = document.getElementById("i2").value;
+            document.getElementById("i1").innerText = "Welcome "+fname+" "+lname;
+        }
+    </script>
+</head>
+<body>
+    <h1>DOM DEMO</h1>
+    <hr>
+    <form name="f1">
+        FirstName : <input type="text" name="t1" id="i1"><br>
+        LastName : <input type="text" name="t2" id="i2"><br>
+        <input type="button" value="Welcome 1" onclick="welcome1(t1.value,t2.value)">
+        <input type="button" value="Welcome 2" onclick="welcome2()">
+        <input type="button" value="Welcome 3" onclick="welcome3()">
+        <input type="button" value="Welcome 4" onclick="welcome4()">
+    </form>
+   <h3>
+        <div>
+            <form name="f2">
+                Welcome : <input type="text" name="wc" id="i3" disabled="true">
+            </form>
+        </div>
+   </h3>
+</body>
+</html>
