@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM DEMO</title>
+    <script>
+        var flag=true;
+    function display(){
+            var login = `<form method="post" action="bom.html">
+                <h3>Please Login</h3>
+                <h4>
+                    Username <input name="un">
+                    <br>
+                    Password <input name="pwd" type="password">
+                    <br>
+                    <input type="submit" value="login">
+                    <input type="reset" value="reset">
+                </h4>
+            </form>`;
+            if(flag)
+            {
+                document.getElementById("s1").innerText="Hide Login";
+                document.getElementById("s1").style.color="red";
+                document.getElementById("d1").innerHTML=login;
+            }
+            else
+            {
+                document.getElementById("s1").innerText="Show Login";
+                document.getElementById("d1").innerHTML="";
+                document.getElementById("s1").style.color="blue";
+            }
+            flag = !flag;
+    }
+    </script>
+</head>
+<body>
+    <h1 style="color: purple;text-align: center;">Document Object Model</h1>
+    <hr>
+    <h2 onclick="display()">
+        <span id="s1" style="color: blue;">Show Login</span></h2>
+    <div id="d1"></div>
+    <hr>
+    <h5>Thank You</h5>
+</body>
+</html>

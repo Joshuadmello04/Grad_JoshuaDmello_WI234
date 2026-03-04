@@ -16,10 +16,14 @@
             <option value="home">HOME</option>
             <option value="car">CAR</option>
             <option value="personal">PERSONAL</option>
-        </select> <br><br>
-        Interest Rate (%): <input type="text" id="interest" disabled="true"> <br><br>
-        Loan Amount: <input type="number" id="amount"> <br><br>
-        Duration (Years) : <input type="number" id="duration"> <br><br>
+        </select> 
+        <br><br>
+        Interest Rate (%): <input type="text" id="interest" disabled="true"> 
+        <br><br>
+        Loan Amount: <input type="number" id="amount"> 
+        <br><br>
+        Duration (Years) : <input type="number" id="duration"> 
+        <br><br>
         <button type="button">Calculate EMI</button>
     </form>
     <h2 id="result"></h2>
@@ -30,56 +34,57 @@
         document.querySelector("button")
         .addEventListener("click", calculateEMI);
 
-function setInterest() {
-    var type = document.getElementById("loanType").value;
-    var rate = document.getElementById("interest");
-    var amountField = document.getElementById("amount");
-    var durationField = document.getElementById("duration");
+    function setInterest() {
+        var type = document.getElementById("loanType").value;
+        var rate = document.getElementById("interest");
+        var amountField = document.getElementById("amount");
+        var durationField = document.getElementById("duration");
 
-    if (type == "home") {
-        rate.value = 9;
-        amountField.min = 500000;
-        durationField.max = 30;
-    }
-    else if (type == "car") {
-        rate.value = 12;
-        amountField.min = 100000;
-        durationField.max = 7;
-    }
-    else if (type == "personal") {
-        rate.value = 15;
-        amountField.min = 10000;
-        durationField.max = 5;
-    }
-    else {
-        rate.value = "";
-        amountField.removeAttribute("min");
-        durationField.removeAttribute("max");
-    }
-}
-
-function calculateEMI() {
-    var name = document.getElementById("name").value;
-    var type = document.getElementById("loanType").value;
-    var amount = parseFloat(document.getElementById("amount").value);
-    var time = parseFloat(document.getElementById("duration").value);
-    var rate = parseFloat(document.getElementById("interest").value);
-
-    if (!name || !type || !amount || !time) {
-        alert("Please fill all fields properly");
-        return;
+        if (type == "home") {
+            rate.value = 9;
+            amountField.min = 500000;
+            durationField.max = 30;
+        }
+        else if (type == "car") {
+            rate.value = 12;
+            amountField.min = 100000;
+            durationField.max = 7;
+        }
+        else if (type == "personal") {
+            rate.value = 15;
+            amountField.min = 10000;
+            durationField.max = 5;
+        }
+        else {
+            rate.value = "";
+            amountField.removeAttribute("min");
+            durationField.removeAttribute("max");
+        }
     }
 
-    var monthlyRate = rate / (12 * 100);
-    var months = time * 12;
+    function calculateEMI() {
+        var name = document.getElementById("name").value;
+        var type = document.getElementById("loanType").value;
+        var amount = parseFloat(document.getElementById("amount").value);
+        var time = parseFloat(document.getElementById("duration").value);
+        var rate = parseFloat(document.getElementById("interest").value);
 
-    var emi = (amount * monthlyRate * Math.pow(1 + monthlyRate, months)) /
-              (Math.pow(1 + monthlyRate, months) - 1);
+        if (!name || !type || !amount || !time) {
+            alert("Please fill all fields properly");
+            return;
+        }
 
-    document.getElementById("result").innerText =
-        "Hello " + name +
-        "\nYour EMI for " + type + " loan is: ₹ " + emi.toFixed(2);
-}
+        var monthlyRate = rate / (12 * 100);
+        var months = time * 12;
+
+        var emi = (amount * monthlyRate * Math.pow(1 + monthlyRate, months)) /
+                (Math.pow(1 + monthlyRate, months) - 1);
+
+        document.getElementById("result").innerText =
+            "Hello " + name +
+            "\nYour EMI for " + type + " loan is: ₹ " + emi.toFixed(2);
+    }
+        
     </script>
 </body>
 </html>
