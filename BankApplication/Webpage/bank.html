@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bank Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="text-center flex-grow-1">
+                <div class="navbar-brand-title text-dark fw-bold">Our Bank</div>
+                <div class="navbar-brand-sub text-dark">Banking at your doorstep</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main>
+        <div class="sidebar" id="sidebar">
+            <ul class="nav flex-column flex-grow-1">
+                <li class="nav-item"><a class="nav-link active" href="#" id="home">🏠 Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="about">ℹ️ About Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="services">🛠️ Services</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="netbanking">💻 Netbanking</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="emi">🧮 EMI Calculator</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="contact">📞 Contact Us</a></li>
+            </ul>
+        </div>
+
+        <div id="selected-service">
+            <div>
+                <h2>Welcome to Our Bank</h2>
+                <p class="text-muted">Select a service from the sidebar.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p class="mb-0 fw-semibold">www.ourbank.com</p>
+        <small>Copyright &copy; All rights reserved.</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const contentDiv = document.getElementById('selected-service');
+        const links      = document.querySelectorAll(".nav-link");
+        const sidebar    = document.getElementById('sidebar');
+        const overlay    = document.getElementById('sidebarOverlay');
+        const toggleBtn  = document.getElementById('sidebarToggle');
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+        }
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        });
+        overlay.addEventListener('click', closeSidebar);
+
+        /* ─────────────────────────────
+           Regex validation rules
+        ───────────────────────────── */
+        const RULES = {
+            username: {
+                re: /^[a-zA-Z0-9_]{4,20}$/,
+                msg: "4–20 characters. Letters, numbers and underscore only."
+            },
+            password: {
+                re: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                msg: "Min 8 chars — needs uppercase, lowercase, digit & special char (@$!%*?&)."
+            },
+            fullname: {
+                re: /^[a-zA-Z\s]{2,50}$/,
+                msg: "2–50 letters and spaces only."
+            },
+            email: {
+                re: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+                msg: "Enter a valid email address (e.g. user@email.com)."
+            },
+            eminame: {
+                re: /^[a-zA-Z\s]{2,50}$/,
+                msg: "2–50 letters and spaces only."
+            }
+        };
+
+        function validateField(el, ruleKey, errEl) {
+            const rule  = RULES[ruleKey];
+            const val   = el.value.trim();
+            const valid = rule.re.test(val);
+            el.classList.toggle('is-invalid', !valid);
+            el.classList.toggle('is-valid',    valid);
+            errEl.textContent = rule.msg;
+            errEl.classList.toggle('show', !valid && val.length > 0);
+            return valid;
+        }
+
+        function attachLive(el, ruleKey, errEl) {
+            el.addEventListener('input', () => validateField(el, ruleKey, errEl));
+            el.addEventListener('blur',  () => {
+                if (el.value.trim()) validateField(el, ruleKey, errEl);
+            });
+        }
+
+        function validateAll(pairs) {
+            let allOk = true;
+            pairs.forEach(([el, key, errEl]) => {
+                const ok = validateField(el, key, errEl);
+                if (!ok) { errEl.classList.add('show'); allOk = false; }
+            });
+            return allOk;
+        }
+
+        /* ─────────────────────────────
+           EMI Calculator
+        ───────────────────────────── */
+        const LOAN_CONFIG = {
+            home:     { rate: 9,  minAmount: 500000, maxYears: 30 },
+            car:      { rate: 12, minAmount: 100000, maxYears: 7  },
+            personal: { rate: 15, minAmount: 10000,  maxYears: 5  }
+        };
+
+        function inr(n) {
+            return '₹\u202F' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function setupEMI() {
+            const loanTypeEl  = document.getElementById("loanType");
+            const amountEl    = document.getElementById("amount");
+            const durationEl  = document.getElementById("duration");
+            const interestEl  = document.getElementById("interest");
+            const badge       = document.getElementById("interestBadge");
+            const calcBtn     = document.getElementById("calcBtn");
+            const resultBox   = document.getElementById("emiResult");
+            const nameEl      = document.getElementById("emiName");
+            const nameErrEl   = document.getElementById("emiNameErr");
+
+            attachLive(nameEl, 'eminame', nameErrEl);
+
+            loanTypeEl.addEventListener("change", function() {
+                const cfg = LOAN_CONFIG[this.value];
+                if (cfg) {
+                    interestEl.value        = cfg.rate;
+                    badge.textContent       = cfg.rate + "% p.a.";
+                    amountEl.min            = cfg.minAmount;
+                    amountEl.placeholder    = "Min ₹" + cfg.minAmount.toLocaleString('en-IN');
+                    durationEl.max          = cfg.maxYears;
+                    durationEl.placeholder  = "1 – " + cfg.maxYears + " years";
+                } else {
+                    interestEl.value = "";
+                    badge.textContent = "";
+                    amountEl.removeAttribute("min");
+                    amountEl.placeholder = "Enter amount";
+                    durationEl.removeAttribute("max");
+                    durationEl.placeholder = "Enter years";
+                }
+                resultBox.classList.remove("show");
+                [amountEl, durationEl].forEach(el => el.classList.remove('is-invalid'));
+            });
+
+            calcBtn.addEventListener("click", function() {
+                let ok = validateAll([[nameEl, 'eminame', nameErrEl]]);
+
+                const type    = loanTypeEl.value;
+                const amount  = parseFloat(amountEl.value);
+                const years   = parseFloat(durationEl.value);
+                const rate    = parseFloat(interestEl.value);
+                const cfg     = LOAN_CONFIG[type];
+
+                if (!type) {
+                    loanTypeEl.classList.add('is-invalid');
+                    ok = false;
+                } else {
+                    loanTypeEl.classList.remove('is-invalid');
+                }
+
+                if (!amount || amount <= 0 || (cfg && amount < cfg.minAmount)) {
+                    amountEl.classList.add('is-invalid');
+                    ok = false;
+                } else {
+                    amountEl.classList.remove('is-invalid');
+                }
+
+                if (!years || years <= 0 || (cfg && years > cfg.maxYears)) {
+                    durationEl.classList.add('is-invalid');
+                    ok = false;
+                } else {
+                    durationEl.classList.remove('is-invalid');
+                }
+
+                if (!ok) {
+                    resultBox.classList.remove("show");
+                    return;
+                }
+
+                const monthlyRate = rate / (12 * 100);
+                const months      = Math.round(years * 12);
+                const emi         = (amount * monthlyRate * Math.pow(1 + monthlyRate, months)) /
+                                    (Math.pow(1 + monthlyRate, months) - 1);
+                const totalPay    = emi * months;
+                const totalInt    = totalPay - amount;
+
+                document.getElementById("emiGreet").textContent   = "Hello, " + nameEl.value.trim() + "!";
+                document.getElementById("emiMonthly").textContent = inr(emi);
+                document.getElementById("emiPrincipal").textContent = inr(amount);
+                document.getElementById("emiTotalInt").textContent  = inr(totalInt);
+                document.getElementById("emiTotalPay").textContent  = inr(totalPay);
+                document.getElementById("emiMonths").textContent    = months + " months";
+
+                resultBox.classList.add("show");
+                resultBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            });
+        }
+
+        /* ─────────────────────────────
+           Login
+        ───────────────────────────── */
+        function setupLogin() {
+            const uEl   = document.getElementById("username");
+            const pEl   = document.getElementById("password");
+            const uErr  = document.getElementById("usernameErr");
+            const pErr  = document.getElementById("passwordErr");
+
+            attachLive(uEl, 'username', uErr);
+            attachLive(pEl, 'password', pErr);
+
+            document.getElementById("loginForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const ok = validateAll([
+                    [uEl, 'username', uErr],
+                    [pEl, 'password', pErr]
+                ]);
+                if (!ok) return;
+                contentDiv.innerHTML = `
+                    <div class="d-flex justify-content-center align-items-center" style="min-height:60vh">
+                        <div class="form-card text-center">
+                            <div style="font-size:3rem">👋</div>
+                            <h2 class="mt-2">Welcome back!</h2>
+                            <p class="text-muted">You have logged in successfully.</p>
+                        </div>
+                    </div>`;
+                links.forEach(l => l.classList.remove("active"));
+                document.getElementById("home").classList.add("active");
+            });
+
+            document.getElementById("signupBtn").addEventListener("click", setupSignup);
+        }
+
+        /* ─────────────────────────────
+           Sign Up
+        ───────────────────────────── */
+        function setupSignup() {
+            contentDiv.innerHTML = `
+                <div class="d-flex justify-content-center align-items-center" style="min-height:70vh">
+                    <div class="form-card">
+                        <h2 class="mb-4 text-center">Create Account</h2>
+                        <form id="signupForm" novalidate>
+                            <div class="mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" id="sName" class="form-control" placeholder="Enter full name">
+                                <div class="field-error" id="sNameErr"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" id="sEmail" class="form-control" placeholder="Enter email">
+                                <div class="field-error" id="sEmailErr"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Create Password</label>
+                                <input type="password" id="sPass" class="form-control" placeholder="Min 8 chars, upper+lower+number+special">
+                                <div class="field-error" id="sPassErr"></div>
+                            </div>
+                            <div class="form-buttons">
+                                <button type="submit" class="btn btn-success">Register</button>
+                                <button type="button" id="backToLogin" class="btn btn-outline-secondary">Back</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>`;
+
+            const nEl = document.getElementById("sName"),  nErr = document.getElementById("sNameErr");
+            const eEl = document.getElementById("sEmail"), eErr = document.getElementById("sEmailErr");
+            const pEl = document.getElementById("sPass"),  pErr = document.getElementById("sPassErr");
+
+            attachLive(nEl, 'fullname', nErr);
+            attachLive(eEl, 'email',    eErr);
+            attachLive(pEl, 'password', pErr);
+
+            document.getElementById("signupForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const ok = validateAll([
+                    [nEl, 'fullname', nErr],
+                    [eEl, 'email',    eErr],
+                    [pEl, 'password', pErr]
+                ]);
+                if (!ok) return;
+                contentDiv.innerHTML = `
+                    <div class="d-flex justify-content-center align-items-center" style="min-height:70vh">
+                        <div class="form-card text-center">
+                            <div style="font-size:3rem">✅</div>
+                            <h2 class="mt-2">Account Created!</h2>
+                            <p class="text-muted">You can now login using your credentials.</p>
+                            <button class="btn btn-warning mt-2" id="goLogin">Go to Login</button>
+                        </div>
+                    </div>`;
+                document.getElementById("goLogin").addEventListener("click", () => {
+                    document.getElementById("netbanking").click();
+                });
+            });
+
+            document.getElementById("backToLogin").addEventListener("click", () => {
+                document.getElementById("netbanking").click();
+            });
+        }
+
+        /* ─────────────────────────────
+           Router
+        ───────────────────────────── */
+        links.forEach(link => {
+            link.addEventListener("click", function(e) {
+                e.preventDefault();
+                links.forEach(l => l.classList.remove("active"));
+                this.classList.add("active");
+                closeSidebar();
+
+                switch(this.id) {
+
+                    case "home":
+                        contentDiv.innerHTML = `
+                            <h2>Welcome to Our Bank</h2>
+                            <p class="text-muted">Select a service from the sidebar.</p>`;
+                        break;
+
+                    case "about":
+                        contentDiv.innerHTML = `
+                            <h2 class="mb-3">About Us</h2>
+                            <p>We have been serving customers for over 50 years with trust and excellence.</p>`;
+                        break;
+
+                    case "services":
+                        contentDiv.innerHTML = `
+                            <h2 class="mb-4">Our Services</h2>
+                            <div class="row g-3">
+                                ${[
+                                    ["💰","Savings Account","Secure and flexible savings options with attractive interest rates."],
+                                    ["🏢","Current Account","Designed for businesses with seamless transaction support."],
+                                    ["🏦","Loans","Personal, home, and business loans at competitive rates."],
+                                    ["💳","Credit Cards","Enjoy rewards, cashback, and secure digital payments."]
+                                ].map(([icon,title,desc]) => `
+                                    <div class="col-12 col-sm-6 col-xl-3">
+                                        <div class="card shadow-sm h-100">
+                                            <div class="card-body text-center p-4">
+                                                <div style="font-size:2rem;margin-bottom:.5rem">${icon}</div>
+                                                <h5 class="card-title">${title}</h5>
+                                                <p class="card-text text-muted small">${desc}</p>
+                                                <button class="btn btn-warning btn-sm px-3">Learn More</button>
+                                            </div>
+                                        </div>
+                                    </div>`).join('')}
+                            </div>`;
+                        break;
+
+                    case "netbanking":
+                        contentDiv.innerHTML = `
+                            <div class="d-flex justify-content-center align-items-center" style="min-height:70vh">
+                                <div class="form-card">
+                                    <h2 class="mb-4 text-center">Netbanking Login</h2>
+                                    <form id="loginForm" novalidate>
+                                        <div class="mb-3">
+                                            <label class="form-label">Username</label>
+                                            <input type="text" id="username" class="form-control" placeholder="">
+                                            <div class="field-error" id="usernameErr"></div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label">Password</label>
+                                            <input type="password" id="password" class="form-control" placeholder="">
+                                            <div class="field-error" id="passwordErr"></div>
+                                        </div>
+                                        <div class="form-buttons">
+                                            <button type="submit" class="btn btn-primary">Login</button>
+                                            <button type="button" id="signupBtn" class="btn btn-outline-secondary">Sign Up</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>`;
+                        setupLogin();
+                        break;
+
+                    case "emi":
+                        contentDiv.innerHTML = `
+                            <h2 class="mb-4">🧮 EMI Calculator</h2>
+                            <div class="row g-4 align-items-start">
+                                <div class="col-12 col-lg-6">
+                                    <div class="form-card" style="max-width:100%">
+                                        <div class="mb-3">
+                                            <label class="form-label">Your Name</label>
+                                            <input type="text" id="emiName" class="form-control" placeholder="Enter your name">
+                                            <div class="field-error" id="emiNameErr"></div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Loan Type</label>
+                                            <select id="loanType" class="form-select">
+                                                <option value="">-- Select Loan Type --</option>
+                                                <option value="home">🏠 Home Loan — 9% p.a., up to 30 yrs</option>
+                                                <option value="car">🚗 Car Loan — 12% p.a., up to 7 yrs</option>
+                                                <option value="personal">👤 Personal Loan — 15% p.a., up to 5 yrs</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                Interest Rate (% p.a.)
+                                                <span id="interestBadge" class="interest-badge"></span>
+                                            </label>
+                                            <input type="number" id="interest" class="form-control" readonly style="background:#f8f9fa;cursor:not-allowed" placeholder="Auto-filled on loan selection">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Loan Amount (₹)</label>
+                                            <input type="number" id="amount" class="form-control" placeholder="Select loan type first" min="1">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label">Duration (Years)</label>
+                                            <input type="number" id="duration" class="form-control" placeholder="Select loan type first" min="1">
+                                        </div>
+                                        <button class="btn btn-warning w-100 fw-semibold" id="calcBtn">Calculate EMI</button>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <div id="emiResult" class="emi-result">
+                                        <p id="emiGreet" class="mb-1 small" style="color:rgba(255,255,255,0.6)"></p>
+                                        <p class="mb-0" style="color:rgba(255,255,255,0.7);font-size:0.9rem">Monthly EMI</p>
+                                        <div class="emi-amount" id="emiMonthly"></div>
+                                        <div class="emi-breakdown">
+                                            <div class="badge-item">Principal<span id="emiPrincipal"></span></div>
+                                            <div class="badge-item">Total Interest<span id="emiTotalInt"></span></div>
+                                            <div class="badge-item">Total Payable<span id="emiTotalPay"></span></div>
+                                            <div class="badge-item">Tenure<span id="emiMonths"></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                        setupEMI();
+                        break;
+
+                    case "contact":
+                        contentDiv.innerHTML = `
+                            <h2 class="mb-4">Contact Us</h2>
+                            <div class="contact-item">
+                                <div class="contact-icon">📧</div>
+                                <span>support@ourbank.com</span>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">📞</div>
+                                <span>+91 9876543210</span>
+                            </div>`;
+                        break;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
