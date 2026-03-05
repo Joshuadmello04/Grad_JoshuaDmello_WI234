@@ -37,9 +37,37 @@
         </div>
 
         <div id="selected-service">
-            <div>
-                <h2>Welcome to Our Bank</h2>
-                <p class="text-muted">Select a service from the sidebar.</p>
+            <div class="hero">
+                <div style="position:relative;z-index:1">
+                    <div class="hero-badge">✦ Trusted Since 1974</div>
+                    <h1>Banking made <span>simple,</span><br>secure & smart.</h1>
+                    <p>Manage your money, apply for loans, and track your finances — all from one place, at your pace.</p>
+                    <div class="hero-actions">
+                        <button class="btn btn-warning" onclick="document.getElementById('netbanking').click()">Get Started</button>
+                        <button class="btn btn-outline-light" onclick="document.getElementById('services').click()">Our Services</button>
+                    </div>
+                    <div class="stat-strip">
+                        <div class="stat-item"><div class="stat-num">2M+</div><div class="stat-label">Happy Customers</div></div>
+                        <div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">Years of Trust</div></div>
+                        <div class="stat-item"><div class="stat-num">₹10B+</div><div class="stat-label">Loans Disbursed</div></div>
+                        <div class="stat-item"><div class="stat-num">99.9%</div><div class="stat-label">Uptime</div></div>
+                    </div>
+                </div>
+            </div>
+            <p class="fw-semibold mb-2" style="color:#555;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.06em">Quick Access</p>
+            <div class="quick-grid">
+                <div class="quick-card" onclick="document.getElementById('netbanking').click()">
+                    <div class="qc-icon">💻</div><div class="qc-label">Netbanking</div>
+                </div>
+                <div class="quick-card" onclick="document.getElementById('emi').click()">
+                    <div class="qc-icon">🧮</div><div class="qc-label">EMI Calculator</div>
+                </div>
+                <div class="quick-card" onclick="document.getElementById('services').click()">
+                    <div class="qc-icon">🛠️</div><div class="qc-label">Services</div>
+                </div>
+                <div class="quick-card" onclick="document.getElementById('contact').click()">
+                    <div class="qc-icon">📞</div><div class="qc-label">Contact Us</div>
+                </div>
             </div>
         </div>
     </main>
@@ -336,8 +364,39 @@
 
                     case "home":
                         contentDiv.innerHTML = `
-                            <h2>Welcome to Our Bank</h2>
-                            <p class="text-muted">Select a service from the sidebar.</p>`;
+                            <div class="hero">
+                                <div style="position:relative;z-index:1">
+                                    <div class="hero-badge">✦ Trusted Since 1974</div>
+                                    <h1>Banking made <span>simple,</span><br>secure & smart.</h1>
+                                    <p>Manage your money, apply for loans, and track your finances — all from one place, at your pace.</p>
+                                    <div class="hero-actions">
+                                        <button class="btn btn-warning" onclick="document.getElementById('netbanking').click()">Get Started</button>
+                                        <button class="btn btn-outline-light" onclick="document.getElementById('services').click()">Our Services</button>
+                                    </div>
+                                    <div class="stat-strip">
+                                        <div class="stat-item"><div class="stat-num">2M+</div><div class="stat-label">Happy Customers</div></div>
+                                        <div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">Years of Trust</div></div>
+                                        <div class="stat-item"><div class="stat-num">₹10B+</div><div class="stat-label">Loans Disbursed</div></div>
+                                        <div class="stat-item"><div class="stat-num">99.9%</div><div class="stat-label">Uptime</div></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="fw-semibold mb-2" style="color:#555;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.06em">Quick Access</p>
+                            <div class="quick-grid">
+                                <div class="quick-card" onclick="document.getElementById('netbanking').click()">
+                                    <div class="qc-icon">💻</div><div class="qc-label">Netbanking</div>
+                                </div>
+                                <div class="quick-card" onclick="document.getElementById('emi').click()">
+                                    <div class="qc-icon">🧮</div><div class="qc-label">EMI Calculator</div>
+                                </div>
+                                <div class="quick-card" onclick="document.getElementById('services').click()">
+                                    <div class="qc-icon">🛠️</div><div class="qc-label">Services</div>
+                                </div>
+                                <div class="quick-card" onclick="document.getElementById('contact').click()">
+                                    <div class="qc-icon">📞</div><div class="qc-label">Contact Us</div>
+                                </div>
+                            </div>`;
                         break;
 
                     case "about":
@@ -377,12 +436,12 @@
                                     <form id="loginForm" novalidate>
                                         <div class="mb-3">
                                             <label class="form-label">Username</label>
-                                            <input type="text" id="username" class="form-control" placeholder="">
+                                            <input type="text" id="username" class="form-control" placeholder="4–20 chars, letters / numbers / _">
                                             <div class="field-error" id="usernameErr"></div>
                                         </div>
                                         <div class="mb-4">
                                             <label class="form-label">Password</label>
-                                            <input type="password" id="password" class="form-control" placeholder="">
+                                            <input type="password" id="password" class="form-control" placeholder="Min 8 chars, upper+lower+number+special">
                                             <div class="field-error" id="passwordErr"></div>
                                         </div>
                                         <div class="form-buttons">
