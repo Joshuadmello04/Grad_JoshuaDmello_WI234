@@ -1,0 +1,60 @@
+<h2>Student Dashboard</h2>
+
+<!-- Add Student Button -->
+<div style="text-align:center;">
+    <button *ngIf="role=='Teacher'" (click)="showForm=true; editMode=false">
+        Add Student
+    </button>
+</div>
+
+<br><br>
+
+<table border="2">
+    <tr>
+        <th>Roll No</th>
+        <th>Name</th>
+        <th>Reg No</th>
+        <th>School Name</th>
+
+        <!-- if teacher -->
+        <th *ngIf="role=='Teacher'">Actions</th>
+    </tr>
+
+    <tr *ngFor="let s of students">
+        <td>{{s.rollNo}}</td>
+        <td>{{s.name}}</td>
+        <td>{{s.regNo}}</td>
+        <td>{{s.schoolName}}</td>
+
+        <!-- teacher actions -->
+        <td *ngIf="role=='Teacher'" style="text-align:center">
+            <button (click)="edit(s.rollNo)">Edit</button>
+            <button (click)="delete(s.rollNo)">Delete</button>
+        </td>
+    </tr>
+</table>
+
+<br>
+
+<!-- Form appears only when needed -->
+<div *ngIf="role=='Teacher' && showForm" style="text-align:center">
+
+    <h3 *ngIf="!editMode">Add Student</h3>
+    <h3 *ngIf="editMode">Edit Student</h3>
+
+    Roll No:
+    <input type="number" [(ngModel)]="newStudent.rollNo"> <br><br>
+
+    Name:
+    <input type="text" [(ngModel)]="newStudent.name"> <br><br>
+
+    Reg No:
+    <input type="text" [(ngModel)]="newStudent.regNo"> <br><br>
+
+    School Name:
+    <input type="text" [(ngModel)]="newStudent.schoolName"> <br><br>
+
+    <button *ngIf="!editMode" (click)="addStudent()">Add Student</button>
+    <button *ngIf="editMode" (click)="updateStudent()">Update Student</button>
+
+</div>
