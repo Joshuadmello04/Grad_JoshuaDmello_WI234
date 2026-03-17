@@ -9,8 +9,6 @@ function App() {
 
   return (
     <>
-    <Header/>
-    <hr/>
     <Menu/>
      <Routes>
           <Route path="/" element={<Home />} />

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Calculator.css";
 
 const Calculator = () => {
   const loanConfig = {
@@ -40,77 +41,54 @@ const Calculator = () => {
     setEmi(emiValue.toFixed(2));
   };
 
-  return (
-    <>
-      <h2>Loan Calculator</h2>
-      <form onSubmit={calculateEmi} style={{ maxWidth: 400, margin: "auto" }}>
-        <div style={{ marginBottom: 10 }}>
-          <label>
-            Applicant:{" "}
-            <input
-              type="text"
-              value={applicant}
-              onChange={(e) => setApplicant(e.target.value)}
-              required
-            />
-          </label>
-        </div>
+return (
+  <div className="container">
+    <div className="card">
+      <h2>💰 Loan Calculator</h2>
 
-        <div style={{ marginBottom: 10 }}>
-          <label>
-            Type:{" "}
-            <select value={type} onChange={(e) => setType(e.target.value)}>
-              <option value="home">Home Loan</option>
-              <option value="car">Car Loan</option>
-              <option value="personal">Personal Loan</option>
-            </select>
-          </label>
-        </div>
+      <form onSubmit={calculateEmi}>
+        <input
+          type="text"
+          placeholder="Applicant Name"
+          value={applicant}
+          onChange={(e) => setApplicant(e.target.value)}
+        />
 
-        <div style={{ marginBottom: 10 }}>
-          Interest: <strong>{loanConfig[type].rate}%</strong>
-        </div>
+        <select value={type} onChange={(e) => setType(e.target.value)}>
+          <option value="home">Home Loan</option>
+          <option value="car">Car Loan</option>
+          <option value="personal">Personal Loan</option>
+        </select>
 
-        <div style={{ marginBottom: 10 }}>
-          <label>
-            Amount (Min ₹{loanConfig[type].minAmt.toLocaleString()}):{" "}
-            <input
-              type="number"
-              placeholder={`Min ₹${loanConfig[type].minAmt.toLocaleString()}`}
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              required
-              min={loanConfig[type].minAmt}
-            />
-          </label>
-        </div>
+        <p className="interest">
+          Interest: {loanConfig[type].rate}%
+        </p>
 
-        <div style={{ marginBottom: 10 }}>
-          <label>
-            Duration (Years, Max {loanConfig[type].maxYears}):{" "}
-            <input
-              type="number"
-              placeholder={`Max ${loanConfig[type].maxYears}`}
-              value={years}
-              onChange={(e) => setYears(e.target.value)}
-              required
-              max={loanConfig[type].maxYears}
-            />
-          </label>
-        </div>
+        <input
+          type="number"
+          placeholder={`Amount (Min ₹${loanConfig[type].minAmt})`}
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
 
-        <button type="submit" style={{ padding: "8px 20px", cursor: "pointer" }}>
-          Calculate EMI
-        </button>
+        <input
+          type="number"
+          placeholder={`Duration (Max ${loanConfig[type].maxYears} years)`}
+          value={years}
+          onChange={(e) => setYears(e.target.value)}
+        />
+
+        <button type="submit">Calculate EMI</button>
       </form>
 
       {emi && (
-        <div style={{ marginTop: 20, textAlign: "center" }}>
-          <h3>Monthly EMI: ₹ {emi}</h3>
+        <div className="result">
+          <p>Monthly EMI</p>
+          <h3>₹ {emi}</h3>
         </div>
       )}
-    </>
-  );
-};
-
+    </div>
+  </div>
+);
+}
 export default Calculator;
